@@ -3,7 +3,8 @@ import "./App.css";
 import { createPresignedUrl } from "./components/createPresignedUrl";
 import { listAllObjectKeys } from "./components/listAllObjectKeys";
 
-const bucket: string = import.meta.env.VITE_AWS_S3_BUCKET;
+// 이미지 가져오기
+const bucket: string = import.meta.env.VITE_AWS_S3_IMAGE_BUCKET;
 
 function App() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -48,9 +49,9 @@ function App() {
   }
 
   // 테스트 코드
-  listAllObjectKeys(bucket).then((keys) => {
-    console.log("All object keys:", keys);
-  });
+  // listAllObjectKeys(bucket).then((keys) => {
+  //   console.log("All object keys:", keys);
+  // });
 
   return (
     <div>
