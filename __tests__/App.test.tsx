@@ -6,8 +6,8 @@ import { createPresignedUrl } from "../src/components/createPresignedUrl.tsx";
 import { listAllObjectKeys } from "../src/components/listAllObjectKeys.tsx";
 
 // 모듈을 모의(mock)하여 실제 API 호출을 방지합니다.
-vi.mock("../components/listAllObjectKeys");
-vi.mock("../components/createPresignedUrl");
+vi.mock("../src/components/listAllObjectKeys");
+vi.mock("../src/components/createPresignedUrl");
 
 describe("App Component", () => {
   // 테스트 1: 로딩 상태를 올바르게 표시하는지 확인
