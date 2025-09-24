@@ -58,7 +58,8 @@ describe("App Component", () => {
     });
 
     // "No images found." 메시지가 화면에 있는지 확인
-    expect(screen.getByText("No images found.")).toBeInTheDocument();
+    // 텍스트가 여러 요소에 걸쳐있을 경우, 정규식 사용
+    expect(screen.getByText(/No images found./i)).toBeInTheDocument();
   });
 
   // 테스트 4: API 호출 실패 시 에러 메시지를 표시하는지 확인
