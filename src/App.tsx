@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { createPresignedUrl } from "./components/createPresignedUrl";
-import { listAllObjectKeys } from "./components/listAllObjectKeys";
-
-// 이미지 가져오기
-const bucket: string = import.meta.env.VITE_AWS_S3_IMAGE_BUCKET;
 
 function App() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -15,33 +10,41 @@ function App() {
     const fetchImages = async () => {
       try {
         setLoading(true);
-        // 1. 모든 객체 키 가져오기
-        const keys = await listAllObjectKeys(bucket);
-        console.log("1");
+        setError(null);
 
-        // 2. 각 키에 대한 미리 서명된 URL 생성
-        const urls = await createPresignedUrl({
-          bucketName: bucket,
-          objectKeys: keys,
-        });
-        console.log("2");
+        // 백엔드 API 서버의 '/images' 엔드포인트 호출
+        // const response = await fetch("http://[EC2 퍼블릭 IP]:80/images");
+        const response = await fetch("https://ngxt.p-e.kr/images");
 
-        if (urls) {
+        if (!response.ok) {
+          throw new Error("Failed to fetch images from backend.");
+        }
+
+        const urls: string[] = await response.json();
+
+        if (urls && urls.length > 0) {
           setImageUrls(urls);
-          console.log("3");
         } else {
-          setError("Failed to fetch image URLs.");
+          setError("No images found.");
         }
       } catch (e) {
-        console.error("Error fetching images:", e);
-        setError("Failed to load images.");
+        // e가 Error 객체인지 확인
+        if (e instanceof Error) {
+          // e가 Error 타입임을 보장하므로, e.message에 접근 가능
+          console.error("Error fetching images:", e.message);
+          setError(`Failed to load images: ${e.message}`);
+        } else {
+          // e가 Error 객체가 아닐 경우
+          console.error("An unknown error occurred:", e);
+          setError("An unknown error occurred.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchImages();
-  }, []); // 빈 배열은 컴포넌트 마운트 시 한 번만 실행되도록 합니다.
+  }, []);
 
   if (loading) {
     return <div>Loading images...</div>;
@@ -50,11 +53,6 @@ function App() {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-  // 테스트 코드
-  // listAllObjectKeys(bucket).then((keys) => {
-  //   console.log("All object keys:", keys);
-  // });
 
   return (
     <div>
