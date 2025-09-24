@@ -17,15 +17,18 @@ function App() {
         setLoading(true);
         // 1. 모든 객체 키 가져오기
         const keys = await listAllObjectKeys(bucket);
+        console.log("1");
 
         // 2. 각 키에 대한 미리 서명된 URL 생성
         const urls = await createPresignedUrl({
           bucketName: bucket,
           objectKeys: keys,
         });
+        console.log("2");
 
         if (urls) {
           setImageUrls(urls);
+          console.log("3");
         } else {
           setError("Failed to fetch image URLs.");
         }
